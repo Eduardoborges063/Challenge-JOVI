@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Câmera de Memórias JOVI</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="bg-slate-950 text-white min-h-screen">
+
+    <div id="app" class="max-w-sm mx-auto min-h-screen bg-slate-950 relative pb-20">
+
+        <!-- HEADER -->
+        <header class="flex items-center justify-between px-4 py-4">
+            <div class="flex items-center gap-3">
+                <span class="w-1 h-10 bg-yellow-400 rounded-full"></span>
+                <h1 class="text-2xl font-bold">Câmera de<br>Memórias JOVI</h1>
+            </div>
+            <button id="btn-proxima-tela" class="bg-yellow-400 rounded-full w-9 h-9 flex items-center justify-center">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"
+                    stroke-linecap="round" stroke-linejoin="round" class="text-slate-900">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </button>
+        </header>
+
+        <!-- TELA 1 - CÂMERA -->
+        <section id="tela-camera" class="px-4">
+
+            <div class="relative bg-slate-800 rounded-2xl h-72 overflow-hidden">
+
+                <!-- Estado 1: SEM foto (badge + reconhecimento) -->
+                <div id="estado-sem-foto">
+                    <div id="badge-proximos"
+                        class="absolute top-3 left-3 bg-slate-900/70 text-xs px-3 py-1 rounded-full">
+                        PRÓXIMOS (3)
+                    </div>
+
+                    <div id="card-reconhecimento"
+                        class="absolute top-14 left-1/2 -translate-x-1/2 bg-slate-900/80 px-4 py-2 rounded-xl text-center">
+                        <p class="text-sm font-semibold">Perfil Reconhecido</p>
+                        <p class="text-xs text-slate-400">Buscando...</p>
+                    </div>
+                </div>
+
+                <!-- Estado 2: COM foto (formulário de informações) -->
+                <div id="perfil-foto-card" class="absolute inset-3 rounded-xl overflow-hidden hidden">
+                    <img id="perfil-foto-img" class="w-full h-full object-cover" alt="Foto adicionada">
+
+                    <div class="absolute bottom-0 left-0 right-0 bg-slate-900/90 p-3 space-y-2">
+
+                        <div>
+                            <label class="text-[10px] text-slate-400 block mb-1">LOCAL</label>
+                            <input id="input-local-foto" type="text" placeholder="Nome do local"
+                                class="w-full bg-slate-800 text-sm rounded-lg px-3 py-2 outline-none">
+                        </div>
+
+                        <div>
+                            <label class="text-[10px] text-slate-400 block mb-1">SUA AVALIAÇÃO</label>
+                            <div id="estrelas-editaveis" class="flex gap-1 text-xl cursor-pointer"></div>
+                        </div>
+
+                        <div>
+                            <label class="text-[10px] text-slate-400 block mb-1">FEEDBACK</label>
+                            <textarea id="input-feedback-foto" rows="2" placeholder="Conte algo sobre esse local..."
+                                class="w-full bg-slate-800 text-sm rounded-lg px-3 py-2 outline-none resize-none"></textarea>
+                        </div>
+
+                        <button id="btn-salvar-foto"
+                            class="w-full bg-yellow-400 text-slate-900 text-sm font-semibold rounded-lg py-2">
+                            Salvar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 flex gap-3">
+                <div class="flex flex-col items-center justify-center bg-slate-900 rounded-2xl p-4">
+                    <label for="input-foto"
+                        class="cursor-pointer bg-yellow-400 rounded-full w-14 h-14 flex items-center justify-center">
+                        <span class="text-slate-900 text-xl">📷</span>
+                    </label>
+                    <input id="input-foto" type="file" accept="image/*" capture="environment" class="hidden">
+                    <span class="text-xs mt-2 text-slate-400">FOTO</span>
+
+                    <button id="btn-reconhecimento"
+                        class="w-full flex items-center justify-between text-xs mt-3 text-slate-300">
+                        RECONHECIMENTO <span>›</span>
+                    </button>
+                </div>
+
+                <div class="flex-1 bg-slate-900 rounded-2xl p-3">
+                    <p id="titulo-memorias-locais" class="text-xs text-slate-400 mb-2"></p>
+                    <ul id="lista-memorias-locais" class="space-y-2 text-xs"></ul>
+                </div>
+            </div>
+
+            <!-- FEEDBACK + EVOLUÇÃO -->
+            <div class="mt-4">
+                <label class="w-full flex items-center gap-3 bg-slate-800 rounded-full px-4 py-3 cursor-pointer">
+                    <span
+                        class="bg-yellow-400 text-slate-900 text-[10px] font-bold rounded-full w-10 h-6 flex items-center justify-center">
+                        AÍ
+                    </span>
+                    <input id="toggle-feedback" type="checkbox" checked class="hidden">
+                    <span class="font-semibold">FEEDBACK</span>
+                </label>
+                <p id="feedback-fotos-label" class="text-xs text-slate-500 mt-1 ml-2"></p>
+
+                <p class="text-xs text-slate-400 font-semibold mt-4 mb-2">SUA EVOLUÇÃO</p>
+
+                <div class="bg-slate-900 rounded-2xl p-4 mb-3">
+                    <div class="flex justify-between items-baseline mb-2">
+                        <span id="evolucao-xp" class="font-bold"></span>
+                        <span id="evolucao-nivel" class="text-xs text-slate-400"></span>
+                    </div>
+                    <div class="w-full bg-slate-700 rounded-full h-2">
+                        <div id="evolucao-barra" class="bg-lime-400 h-2 rounded-full"></div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-2xl p-4">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span>🏆</span>
+                        <span class="text-yellow-400 text-sm font-semibold">DESAFIO DA SEMANA</span>
+                    </div>
+                    <div class="w-full bg-slate-700 rounded-full h-2 mb-2">
+                        <div id="desafio-barra" class="bg-lime-400 h-2 rounded-full"></div>
+                    </div>
+                    <p id="desafio-label" class="text-xs text-slate-400 text-right"></p>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <p class="text-xs text-slate-400 mb-2">FEED COMUNIDADE</p>
+                <ul id="lista-feed-comunidade" class="space-y-3"></ul>
+            </div>
+        </section>
+
+        <!-- TELA 2 - BUSCA -->
+        <section id="tela-busca" class="px-4 mt-4 hidden">
+            <input id="input-busca" type="text" placeholder="Buscar memórias, murais, pessoas..."
+                class="w-full bg-slate-800 text-sm placeholder-slate-500 rounded-full px-4 py-3 mb-4 outline-none">
+            <ul id="lista-resultados-busca" class="space-y-3"></ul>
+        </section>
+
+        <!-- TELA 3 - AVALIAÇÕES DA COMUNIDADE -->
+        <section id="tela-avaliacoes" class="px-4 mt-4 hidden">
+            <p class="text-xs text-slate-400 mb-3">AVALIAÇÕES DA COMUNIDADE</p>
+            <ul id="lista-avaliacoes" class="space-y-3"></ul>
+        </section>
+
+        <!-- TELA 4 - RECURSOS DO JOVI -->
+        <section id="tela-recursos" class="px-4 mt-4 hidden">
+            <p class="text-xs text-slate-400 mb-3">RECURSOS DO JOVI</p>
+            <ul id="lista-recursos" class="space-y-3"></ul>
+        </section>
+
+        <!-- TELA 5 - PERFIL -->
+        <!-- TELA 5 - PERFIL -->
+        <section id="tela-perfil" class="mt-4 hidden flex flex-col items-center">
+
+            <!-- Fundo personalizável -->
+            <div id="perfil-fundo" class="w-full h-28 bg-slate-900 rounded-b-2xl relative">
+                <label for="input-fundo-foto"
+                    class="absolute bottom-2 right-2 bg-slate-800/80 text-[10px] px-2 py-1 rounded-full cursor-pointer">
+                    Alterar fundo
+                </label>
+                <input id="input-fundo-foto" type="file" accept="image/*" class="hidden">
+            </div>
+
+            <div class="px-4 w-full flex flex-col items-center -mt-10">
+
+                <!-- Avatar + botão de trocar -->
+                <div class="relative">
+                    <div id="avatar-perfil" class="w-20 h-20 rounded-full bg-blue-900"></div>
+                    <label for="input-avatar-foto"
+                        class="absolute bottom-0 right-0 bg-yellow-400 rounded-full w-6 h-6 flex items-center justify-center text-[10px] cursor-pointer">
+                        📷
+                    </label>
+                    <input id="input-avatar-foto" type="file" accept="image/*" class="hidden">
+                </div>
+
+                <!-- Nome (com edição) -->
+                <div id="exibir-nome" class="flex items-center gap-2 mt-3">
+                    <p id="perfil-nome" class="font-semibold"></p>
+                    <button id="btn-editar-nome" class="text-xs text-yellow-400">✏️</button>
+                </div>
+
+                <div id="editar-nome-form" class="hidden items-center gap-2 mt-3">
+                    <input id="input-novo-nome" type="text"
+                        class="bg-slate-800 text-sm rounded-lg px-3 py-1 outline-none">
+                    <button id="btn-salvar-nome"
+                        class="bg-yellow-400 text-slate-900 text-xs font-semibold rounded-lg px-3 py-1">
+                        Salvar
+                    </button>
+                </div>
+
+                <p id="perfil-nivel" class="text-xs text-slate-400"></p>
+                <p id="perfil-nivel" class="text-xs text-slate-400"></p>
+
+                <!-- Decorações -->
+                <div id="lista-decoracoes" class="flex gap-2 mt-3"></div>
+
+                <div class="grid grid-cols-3 gap-2 w-full mt-6">
+                    <div class="bg-slate-900 rounded-xl p-3 text-center">
+                        <p id="perfil-xp" class="font-bold text-sm"></p>
+                        <p class="text-[10px] text-slate-400">XP TOTAL</p>
+                    </div>
+                    <div class="bg-slate-900 rounded-xl p-3 text-center">
+                        <p id="perfil-memorias" class="font-bold text-sm"></p>
+                        <p class="text-[10px] text-slate-400">MEMÓRIAS</p>
+                    </div>
+                    <div class="bg-slate-900 rounded-xl p-3 text-center">
+                        <p id="perfil-desafios" class="font-bold text-sm"></p>
+                        <p class="text-[10px] text-slate-400">DESAFIO</p>
+                    </div>
+                </div>
+
+                <div class="w-full mt-6">
+                    <p class="text-xs text-slate-400 mb-2">PROGRESSO DE NÍVEL</p>
+                    <div class="bg-slate-900 rounded-xl p-3">
+                        <div class="flex justify-between text-xs mb-2">
+                            <span id="perfil-nivel-atual"></span>
+                            <span id="perfil-proxima-meta"></span>
+                        </div>
+                        <div class="w-full bg-slate-700 rounded-full h-2">
+                            <div id="barra-progresso" class="bg-yellow-400 h-2 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Minhas fotos -->
+                <div class="w-full mt-6 mb-4">
+                    <p class="text-xs text-slate-400 mb-2">MINHAS FOTOS</p>
+                    <div id="grid-minhas-fotos" class="grid grid-cols-3 gap-2"></div>
+                    <p id="minhas-fotos-vazio" class="text-xs text-slate-500 hidden">
+                        Você ainda não adicionou nenhuma foto. Use o botão FOTO na tela inicial para começar.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- NAV INFERIOR (ícones no lugar das bolinhas) -->
+        <nav class="fixed bottom-0 left-0 right-0 max-w-sm mx-auto bg-slate-800 py-2 flex justify-around">
+            <button data-tela="tela-camera"
+                class="nav-dot w-9 h-9 rounded-full flex items-center justify-center">📷</button>
+            <button data-tela="tela-busca"
+                class="nav-dot w-9 h-9 rounded-full flex items-center justify-center">🔍</button>
+            <button data-tela="tela-avaliacoes"
+                class="nav-dot w-9 h-9 rounded-full flex items-center justify-center">⭐</button>
+            <button data-tela="tela-recursos"
+                class="nav-dot w-9 h-9 rounded-full flex items-center justify-center">🧩</button>
+            <button data-tela="tela-perfil"
+                class="nav-dot w-9 h-9 rounded-full flex items-center justify-center">👤</button>
+        </nav>
+
+    </div>
+
+    <script type="module" src="js/model/data.js"></script>
+    <script type="module" src="js/view/render.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+
+</html>
