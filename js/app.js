@@ -9,6 +9,7 @@ import {
   renderDecoracoes,
   renderMinhasFotos,
   mostrarFormularioFoto,
+  resetarFormularioFoto,
   getNotaSelecionada,
   getFotoAtualUrl,
   adicionarMinhaFoto
@@ -19,6 +20,17 @@ import { memoriasLocais, perfilUsuario } from './model/data.js';
 const ordemTelas = ['tela-camera', 'tela-busca', 'tela-avaliacoes', 'tela-recursos', 'tela-perfil'];
 let telaAtualIndex = 0;
 
+// ===== TOAST (substitui o alert) =====
+let toastTimer;
+function mostrarToast(mensagem, tipo = 'ok') {
+  const toast = document.getElementById('toast');
+  toast.textContent = mensagem;
+  toast.dataset.tipo = tipo;
+  toast.classList.add('visivel');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('visivel'), 2600);
+}
+
 function mostrarTela(idTela) {
   ordemTelas.forEach(id => {
     document.getElementById(id).classList.add('hidden');
@@ -27,14 +39,17 @@ function mostrarTela(idTela) {
 
   telaAtualIndex = ordemTelas.indexOf(idTela);
   atualizarNavIcones();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function atualizarNavIcones() {
   document.querySelectorAll('.nav-dot').forEach((btn, index) => {
     if (index === telaAtualIndex) {
+      btn.setAttribute('aria-current', 'page');
       btn.classList.add('bg-yellow-400', 'text-slate-900');
       btn.classList.remove('bg-slate-800', 'text-slate-400');
     } else {
+      btn.removeAttribute('aria-current');
       btn.classList.remove('bg-yellow-400', 'text-slate-900');
       btn.classList.add('bg-slate-800', 'text-slate-400');
     }
@@ -69,10 +84,20 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('btn-salvar-foto').addEventListener('click', () => {
-    const local = document.getElementById('input-local-foto').value;
-    const feedback = document.getElementById('input-feedback-foto').value;
+    const local = document.getElementById('input-local-foto').value.trim();
+    const feedback = document.getElementById('input-feedback-foto').value.trim();
     const nota = getNotaSelecionada();
     const fotoUrl = getFotoAtualUrl();
+
+    if (!local) {
+      mostrarToast('Informe o nome do local', 'erro');
+      document.getElementById('input-local-foto').focus();
+      return;
+    }
+    if (nota === 0) {
+      mostrarToast('Dê uma nota de 1 a 5 estrelas', 'erro');
+      return;
+    }
 
     adicionarMinhaFoto({
       id: Date.now(),
@@ -87,7 +112,14 @@ document.addEventListener('DOMContentLoaded', () => {
     renderMinhasFotos();
     renderPerfil();
 
-    alert('Informações da foto salvas!');
+    resetarFormularioFoto();
+    document.getElementById('input-foto').value = ''; // permite escolher a mesma foto de novo
+    mostrarToast('Memória salva!');
+  });
+
+  document.getElementById('btn-cancelar-foto').addEventListener('click', () => {
+    resetarFormularioFoto();
+    document.getElementById('input-foto').value = '';
   });
 
   document.getElementById('input-avatar-foto').addEventListener('change', (e) => {

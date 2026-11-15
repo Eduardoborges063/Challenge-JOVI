@@ -40,6 +40,8 @@ Aplicação web que permite ao usuário registrar memórias de lugares através 
 - **CSS3**
 - **JavaScript** (ES Modules)
 - **Tailwind CSS** (via CDN)
+- **Phosphor Icons** (via CDN, fonte de ícones)
+- Tema customizado em `css/style.css` (tokens, dock flutuante, animações)
 
 ## 📁 Estrutura do projeto
 

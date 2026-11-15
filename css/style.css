@@ -1,0 +1,679 @@
+/* ==========================================================================
+   JOVI — Câmera de Memórias
+   Tema inspirado nas referências: amarelo + grafite, cantos bem arredondados,
+   dock flutuante "glass" (Smart Launcher) e cards suaves (Mobile Menu Styles).
+
+   Como funciona: o projeto usa Tailwind via CDN, então este arquivo NÃO
+   reescreve o HTML. Ele sobrescreve as classes do Tailwind dentro de #app
+   (o id dá mais especificidade) usando variáveis de design (tokens).
+   ========================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap");
+
+/* --------------------------------------------------------------------------
+   1. TOKENS
+   -------------------------------------------------------------------------- */
+:root {
+  /* cores */
+  --yellow: #f2b50f;
+  --yellow-soft: rgba(242, 181, 15, 0.16);
+  --yellow-glow: rgba(242, 181, 15, 0.35);
+  --ink: #141414;            /* texto sobre amarelo */
+  --bg: #121212;
+  --surface: #1c1c1e;        /* cards */
+  --surface-2: #262628;      /* inputs, itens dentro de cards */
+  --line: rgba(255, 255, 255, 0.07);
+  --muted: #9a9a9f;
+
+  /* forma */
+  --r-sm: 12px;
+  --r-md: 18px;
+  --r-lg: 26px;
+  --r-xl: 34px;
+
+  /* movimento */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --t-fast: 160ms;
+  --t-med: 320ms;
+
+  /* sombras */
+  --shadow-card: 0 10px 30px -12px rgba(0, 0, 0, 0.7);
+  --shadow-dock: 0 18px 40px -10px rgba(0, 0, 0, 0.75);
+}
+
+/* --------------------------------------------------------------------------
+   2. BASE
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body.bg-slate-950 {
+  font-family: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+  background-color: var(--bg);
+  /* brilho amarelo difuso no topo, como o fundo da referência */
+  background-image:
+    radial-gradient(900px 420px at 50% -10%, rgba(242, 181, 15, 0.22), transparent 70%),
+    radial-gradient(600px 300px at 100% 100%, rgba(255, 255, 255, 0.04), transparent 70%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  background: transparent;
+  overflow-x: hidden;
+}
+
+/* no desktop, o app vira um "celular" centralizado */
+@media (min-width: 480px) {
+  #app {
+    margin-block: 24px;
+    min-height: calc(100vh - 48px);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 44px;
+    box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.8);
+  }
+}
+
+#app ::selection {
+  background: var(--yellow);
+  color: var(--ink);
+}
+
+/* esconde a barra de rolagem mantendo a rolagem */
+html {
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   3. CORES DO TAILWIND → TOKENS
+   -------------------------------------------------------------------------- */
+#app .bg-yellow-400 {
+  background-color: var(--yellow);
+}
+#app .text-yellow-400 {
+  color: var(--yellow);
+}
+#app .text-slate-400,
+#app .text-slate-500 {
+  color: var(--muted);
+}
+
+/* cards */
+#app .bg-slate-900 {
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-card);
+}
+#app .bg-slate-800 {
+  background-color: var(--surface-2);
+}
+#app .bg-slate-700 {
+  background-color: rgba(255, 255, 255, 0.09);
+}
+
+/* raios mais generosos */
+#app .rounded-2xl {
+  border-radius: var(--r-lg);
+}
+#app .rounded-xl {
+  border-radius: var(--r-md);
+}
+#app .rounded-lg {
+  border-radius: var(--r-sm);
+}
+
+/* --------------------------------------------------------------------------
+   4. HEADER — bloco amarelo com curva orgânica (widget de relógio da ref.)
+   -------------------------------------------------------------------------- */
+#app > header {
+  position: relative;
+  padding: 22px 20px 30px;
+  background: var(--yellow);
+  color: var(--ink);
+  border-radius: 0 0 var(--r-xl) var(--r-xl);
+  margin-bottom: 6px;
+  box-shadow: 0 20px 50px -20px var(--yellow-glow);
+}
+
+/* "mordida" escura no canto, igual à forma da referência */
+#app > header::after {
+  content: "";
+  position: absolute;
+  right: -34px;
+  bottom: -34px;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: var(--bg);
+  pointer-events: none;
+}
+@media (min-width: 480px) {
+  #app > header {
+    border-radius: 44px 44px var(--r-xl) var(--r-xl);
+  }
+}
+
+#app > header h1 {
+  font-size: 1.45rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+/* a barrinha lateral vira escura (amarelo sobre amarelo some) */
+#app > header .w-1.h-10 {
+  background: var(--ink);
+  opacity: 0.85;
+}
+
+/* botão "próxima tela": escuro com seta amarela */
+#btn-proxima-tela {
+  position: relative;
+  z-index: 1;
+  width: 42px;
+  height: 42px;
+  background: var(--ink);
+  border-radius: 50%;
+  transition: transform var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+  box-shadow: 0 8px 18px -6px rgba(0, 0, 0, 0.55);
+}
+#btn-proxima-tela svg {
+  color: var(--yellow);
+  transition: transform var(--t-med) var(--ease);
+}
+#btn-proxima-tela:active {
+  transform: scale(0.92);
+}
+@media (hover: hover) {
+  #btn-proxima-tela:hover svg {
+    transform: translateX(3px);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5. TELAS — entrada suave ao trocar
+   -------------------------------------------------------------------------- */
+#app > section:not(.hidden) {
+  animation: tela-in var(--t-med) var(--ease) both;
+}
+
+@keyframes tela-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* respiro para o conteúdo não ficar atrás do dock */
+#app {
+  padding-bottom: calc(110px + env(safe-area-inset-bottom));
+}
+
+/* --------------------------------------------------------------------------
+   6. CÂMERA
+   -------------------------------------------------------------------------- */
+/* viewfinder */
+#tela-camera > .relative.h-72 {
+  background:
+    linear-gradient(160deg, rgba(242, 181, 15, 0.12), transparent 55%),
+    var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-card);
+}
+
+/* cantos de "mira" no viewfinder */
+#tela-camera > .relative.h-72::before {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border-radius: 24px;
+  border: 1.5px dashed rgba(242, 181, 15, 0.35);
+  pointer-events: none;
+}
+
+/* chips "glass" (PRÓXIMOS / Perfil reconhecido) */
+#badge-proximos,
+#card-reconhecimento {
+  background: rgba(20, 20, 20, 0.55);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+#badge-proximos {
+  color: var(--yellow);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+#card-reconhecimento {
+  border-radius: var(--r-md);
+}
+
+/* botão de câmera = FAB amarelo com anel pulsante */
+#tela-camera label[for="input-foto"] {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  box-shadow: 0 10px 24px -6px var(--yellow-glow);
+  transition: transform var(--t-fast) var(--ease);
+}
+#tela-camera label[for="input-foto"]::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid var(--yellow);
+  opacity: 0;
+  animation: pulso 2.4s ease-out infinite;
+  pointer-events: none;
+}
+#tela-camera label[for="input-foto"]:active {
+  transform: scale(0.92);
+}
+
+@keyframes pulso {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.35);
+  }
+}
+
+/* formulário da foto */
+#perfil-foto-card > div.absolute {
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  background: rgba(18, 18, 18, 0.82);
+  border-top: 1px solid var(--line);
+}
+
+/* botão FEEDBACK (pílula) */
+#tela-camera label.rounded-full.cursor-pointer {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  transition: border-color var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
+}
+#tela-camera label.rounded-full.cursor-pointer:active {
+  transform: scale(0.98);
+}
+#toggle-feedback:checked ~ span {
+  color: var(--yellow);
+}
+
+/* barras de progresso: tudo amarelo, com animação de preenchimento */
+#evolucao-barra,
+#desafio-barra,
+#barra-progresso {
+  background: linear-gradient(90deg, #d99a00, var(--yellow) 60%, #ffd45a);
+  box-shadow: 0 0 12px var(--yellow-glow);
+  transition: width 700ms var(--ease);
+}
+
+/* títulos pequenos das seções */
+#app section > p.text-xs,
+#app section .text-xs.font-semibold {
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* --------------------------------------------------------------------------
+   7. FORMULÁRIOS
+   -------------------------------------------------------------------------- */
+#app input[type="text"],
+#app textarea {
+  background-color: var(--surface-2);
+  border: 1px solid transparent;
+  color: #fff;
+  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+}
+#app input[type="text"]:focus,
+#app textarea:focus {
+  border-color: var(--yellow);
+  box-shadow: 0 0 0 4px var(--yellow-soft);
+}
+
+/* busca: pílula grande */
+#input-busca {
+  padding: 14px 20px;
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+}
+
+/* botões de ação amarelos */
+#app button.bg-yellow-400 {
+  color: var(--ink);
+  font-weight: 700;
+  transition: transform var(--t-fast) var(--ease), filter var(--t-fast) var(--ease);
+}
+#app button.bg-yellow-400:active {
+  transform: scale(0.96);
+}
+@media (hover: hover) {
+  #app button.bg-yellow-400:hover {
+    filter: brightness(1.08);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   8. LISTAS E CARDS EXPANSÍVEIS (busca, avaliações, recursos)
+   -------------------------------------------------------------------------- */
+#app li.bg-slate-900 {
+  transition: transform var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+}
+@media (hover: hover) {
+  #app li.bg-slate-900:hover {
+    border-color: rgba(242, 181, 15, 0.35);
+  }
+}
+
+.btn-expandir,
+.btn-expandir-avaliacao,
+.btn-toggle-comentarios {
+  cursor: pointer;
+  transition: background-color var(--t-fast) var(--ease);
+}
+.btn-expandir:active,
+.btn-expandir-avaliacao:active {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* conteúdo expandido aparece com fade */
+#app li .border-t {
+  border-color: var(--line);
+  animation: tela-in var(--t-med) var(--ease) both;
+}
+
+/* ícones coloridos (pessoa/local/recurso): mais suaves e arredondados */
+#app .bg-red-600 {
+  background-color: var(--yellow-soft);
+  color: var(--yellow);
+}
+#app .bg-blue-800,
+#app .bg-blue-900 {
+  background-color: #2a2a2e;
+  color: var(--yellow);
+}
+#app li .w-9.h-9,
+#app li .w-8.h-8 {
+  border-radius: 14px;
+}
+#app li .w-9.h-9.rounded-full {
+  border-radius: 50%;
+}
+
+/* --------------------------------------------------------------------------
+   9. PERFIL
+   -------------------------------------------------------------------------- */
+#perfil-fundo {
+  background-size: cover;
+  background-position: center;
+  border-radius: 0 0 var(--r-xl) var(--r-xl);
+  border: 1px solid var(--line);
+  border-top: 0;
+  overflow: hidden;
+}
+#perfil-fundo label {
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+#avatar-perfil {
+  border: 4px solid var(--bg);
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 10px 24px -8px rgba(0, 0, 0, 0.8);
+}
+
+/* stats em 3 blocos */
+#tela-perfil .grid-cols-3 > div.bg-slate-900 {
+  background:
+    linear-gradient(180deg, rgba(242, 181, 15, 0.08), transparent),
+    var(--surface);
+}
+#tela-perfil .grid-cols-3 > div p:first-child {
+  color: var(--yellow);
+  font-size: 1.05rem;
+}
+
+/* decorações (botões) */
+.btn-decoracao {
+  border: 1px solid var(--line);
+  transition: transform var(--t-fast) var(--ease), background-color var(--t-fast) var(--ease);
+}
+.btn-decoracao:active {
+  transform: scale(0.94);
+}
+
+/* galeria */
+#grid-minhas-fotos > div {
+  border-radius: var(--r-md);
+  transition: transform var(--t-med) var(--ease);
+}
+#grid-minhas-fotos img {
+  transition: transform 500ms var(--ease);
+}
+@media (hover: hover) {
+  #grid-minhas-fotos > div:hover img {
+    transform: scale(1.08);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   10. NAVEGAÇÃO INFERIOR — dock flutuante "glass" (ref. Smart Launcher)
+       O JS alterna bg-yellow-400 / bg-slate-800 em .nav-dot; aqui o estado
+       inativo fica transparente e o ativo vira o botão amarelo (estilo FAB).
+   -------------------------------------------------------------------------- */
+#app > nav {
+  left: 0;
+  right: 0;
+  bottom: calc(14px + env(safe-area-inset-bottom));
+  margin-inline: auto;
+  width: min(calc(24rem - 32px), calc(100% - 32px));
+  max-width: none;
+  padding: 8px 10px;
+  gap: 4px;
+  align-items: center;
+  background: rgba(40, 40, 42, 0.62);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  backdrop-filter: blur(22px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  box-shadow: var(--shadow-dock), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  z-index: 50;
+}
+
+.nav-dot {
+  width: 46px !important;
+  height: 46px !important;
+  font-size: 1.15rem;
+  line-height: 1;
+  border: 0;
+  cursor: pointer;
+  transition:
+    background-color var(--t-med) var(--ease),
+    transform var(--t-med) var(--ease),
+    box-shadow var(--t-med) var(--ease),
+    filter var(--t-med) var(--ease);
+}
+
+/* inativo */
+#app .nav-dot.bg-slate-800 {
+  background-color: transparent;
+  box-shadow: none;
+  border: 0;
+  filter: grayscale(1) opacity(0.65);
+}
+
+/* ativo */
+#app .nav-dot.bg-yellow-400 {
+  background-color: var(--yellow);
+  box-shadow: 0 8px 22px -4px var(--yellow-glow);
+  transform: translateY(-4px) scale(1.06);
+  filter: none;
+}
+
+.nav-dot:active {
+  transform: scale(0.9);
+}
+@media (hover: hover) {
+  #app .nav-dot.bg-slate-800:hover {
+    filter: grayscale(0) opacity(1);
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   11. ACESSIBILIDADE
+   -------------------------------------------------------------------------- */
+#app :focus-visible {
+  outline: 2px solid var(--yellow);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   12. ÍCONES (Phosphor)
+   -------------------------------------------------------------------------- */
+#app i.ph,
+#app i.ph-fill {
+  display: inline-block;
+  line-height: 1;
+  vertical-align: -0.125em;
+}
+
+/* dock */
+.nav-dot i {
+  font-size: 1.45rem;
+  transition: transform var(--t-med) var(--ease);
+}
+/* o ícone ativo ganha o traço "preenchido" via peso da fonte */
+#app .nav-dot.bg-yellow-400 i {
+  transform: scale(1.05);
+  -webkit-text-stroke: 0.6px currentColor;
+}
+
+/* ícones dentro dos quadradinhos (lugares e recursos) */
+#app li span.shrink-0 i {
+  font-size: 1.2rem;
+}
+
+/* estrelas */
+#estrelas-editaveis i,
+#app li .text-sm i.ph-star,
+#app li .text-sm i.ph-star-half,
+#app li .text-sm i.ph-fill {
+  font-size: 1.05em;
+}
+#estrelas-editaveis {
+  gap: 6px;
+}
+#estrelas-editaveis > span {
+  display: inline-flex;
+  transition: transform var(--t-fast) var(--ease);
+}
+#estrelas-editaveis > span:active {
+  transform: scale(1.3);
+}
+
+/* setinhas de expandir */
+#app li button > i.ph-caret-up,
+#app li button > i.ph-caret-down {
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+/* --------------------------------------------------------------------------
+   13. TOAST, ESTADO VAZIO E BOTÃO SECUNDÁRIO
+   -------------------------------------------------------------------------- */
+#toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(96px + env(safe-area-inset-bottom));
+  z-index: 100;
+  max-width: calc(100% - 40px);
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: var(--yellow);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 0.875rem;
+  box-shadow: 0 14px 30px -10px var(--yellow-glow);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 16px) scale(0.96);
+  transition: opacity var(--t-med) var(--ease), transform var(--t-med) var(--ease);
+}
+#toast.visivel {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1);
+}
+#toast[data-tipo="erro"] {
+  background: #ff6b5e;
+  color: #fff;
+  box-shadow: 0 14px 30px -10px rgba(255, 107, 94, 0.45);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 36px 16px;
+  text-align: center;
+  color: var(--muted);
+  border: 1.5px dashed var(--line);
+  border-radius: var(--r-lg);
+}
+.empty-state i {
+  font-size: 2rem;
+  color: var(--yellow);
+}
+.empty-state p {
+  color: #fff;
+  font-weight: 600;
+}
+.empty-state span {
+  font-size: 0.75rem;
+}
+
+#app .btn-secundario {
+  transition: transform var(--t-fast) var(--ease);
+}
+#app .btn-secundario:active {
+  transform: scale(0.96);
+}
+
+/* input type=search: remove o "x" nativo feio do Chrome */
+#input-busca::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}

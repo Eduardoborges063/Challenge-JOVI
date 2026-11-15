@@ -5,8 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Câmera de Memórias JOVI</title>
+    <meta name="theme-color" content="#f2b50f">
+    <meta name="description" content="Registre memórias de lugares, avalie locais e evolua com a comunidade JOVI.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><rect width=%27100%27 height=%27100%27 rx=%2728%27 fill=%27%23f2b50f%27/><text x=%2750%27 y=%2766%27 font-size=%2756%27 text-anchor=%27middle%27 font-family=%27sans-serif%27 font-weight=%27800%27 fill=%27%23141414%27>J</text></svg>">
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phosphor Icons (regular + fill) -->
+    <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -71,10 +77,16 @@
                                 class="w-full bg-slate-800 text-sm rounded-lg px-3 py-2 outline-none resize-none"></textarea>
                         </div>
 
-                        <button id="btn-salvar-foto"
-                            class="w-full bg-yellow-400 text-slate-900 text-sm font-semibold rounded-lg py-2">
-                            Salvar
-                        </button>
+                        <div class="flex gap-2">
+                            <button id="btn-cancelar-foto" type="button"
+                                class="btn-secundario flex-1 bg-slate-800 text-slate-300 text-sm font-semibold rounded-lg py-2">
+                                Cancelar
+                            </button>
+                            <button id="btn-salvar-foto" type="button"
+                                class="flex-[2] bg-yellow-400 text-slate-900 text-sm font-semibold rounded-lg py-2">
+                                Salvar
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -83,14 +95,14 @@
                 <div class="flex flex-col items-center justify-center bg-slate-900 rounded-2xl p-4">
                     <label for="input-foto"
                         class="cursor-pointer bg-yellow-400 rounded-full w-14 h-14 flex items-center justify-center">
-                        <span class="text-slate-900 text-xl">📷</span>
+                        <i class="ph-fill ph-camera text-slate-900 text-2xl"></i>
                     </label>
                     <input id="input-foto" type="file" accept="image/*" capture="environment" class="hidden">
                     <span class="text-xs mt-2 text-slate-400">FOTO</span>
 
                     <button id="btn-reconhecimento"
                         class="w-full flex items-center justify-between text-xs mt-3 text-slate-300">
-                        RECONHECIMENTO <span>›</span>
+                        RECONHECIMENTO <i class="ph ph-caret-right"></i>
                     </button>
                 </div>
 
@@ -126,7 +138,7 @@
 
                 <div class="bg-slate-900 rounded-2xl p-4">
                     <div class="flex items-center gap-2 mb-2">
-                        <span>🏆</span>
+                        <i class="ph-fill ph-trophy text-yellow-400 text-lg"></i>
                         <span class="text-yellow-400 text-sm font-semibold">DESAFIO DA SEMANA</span>
                     </div>
                     <div class="w-full bg-slate-700 rounded-full h-2 mb-2">
@@ -144,7 +156,7 @@
 
         <!-- TELA 2 - BUSCA -->
         <section id="tela-busca" class="px-4 mt-4 hidden">
-            <input id="input-busca" type="text" placeholder="Buscar memórias, murais, pessoas..."
+            <input id="input-busca" type="search" aria-label="Buscar pessoas e lugares" autocomplete="off" placeholder="Buscar memórias, murais, pessoas..."
                 class="w-full bg-slate-800 text-sm placeholder-slate-500 rounded-full px-4 py-3 mb-4 outline-none">
             <ul id="lista-resultados-busca" class="space-y-3"></ul>
         </section>
@@ -162,8 +174,7 @@
         </section>
 
         <!-- TELA 5 - PERFIL -->
-        <!-- TELA 5 - PERFIL -->
-        <section id="tela-perfil" class="mt-4 hidden flex flex-col items-center">
+        <section id="tela-perfil" class="mt-4 hidden">
 
             <!-- Fundo personalizável -->
             <div id="perfil-fundo" class="w-full h-28 bg-slate-900 rounded-b-2xl relative">
@@ -180,8 +191,8 @@
                 <div class="relative">
                     <div id="avatar-perfil" class="w-20 h-20 rounded-full bg-blue-900"></div>
                     <label for="input-avatar-foto"
-                        class="absolute bottom-0 right-0 bg-yellow-400 rounded-full w-6 h-6 flex items-center justify-center text-[10px] cursor-pointer">
-                        📷
+                        class="absolute bottom-0 right-0 bg-yellow-400 rounded-full w-6 h-6 flex items-center justify-center text-[12px] cursor-pointer">
+                        <i class="ph-fill ph-camera text-slate-900"></i>
                     </label>
                     <input id="input-avatar-foto" type="file" accept="image/*" class="hidden">
                 </div>
@@ -189,7 +200,7 @@
                 <!-- Nome (com edição) -->
                 <div id="exibir-nome" class="flex items-center gap-2 mt-3">
                     <p id="perfil-nome" class="font-semibold"></p>
-                    <button id="btn-editar-nome" class="text-xs text-yellow-400">✏️</button>
+                    <button id="btn-editar-nome" class="text-yellow-400" aria-label="Editar nome"><i class="ph ph-pencil-simple text-base"></i></button>
                 </div>
 
                 <div id="editar-nome-form" class="hidden items-center gap-2 mt-3">
@@ -201,7 +212,6 @@
                     </button>
                 </div>
 
-                <p id="perfil-nivel" class="text-xs text-slate-400"></p>
                 <p id="perfil-nivel" class="text-xs text-slate-400"></p>
 
                 <!-- Decorações -->
@@ -249,18 +259,21 @@
         <!-- NAV INFERIOR (ícones no lugar das bolinhas) -->
         <nav class="fixed bottom-0 left-0 right-0 max-w-sm mx-auto bg-slate-800 py-2 flex justify-around">
             <button data-tela="tela-camera"
-                class="nav-dot w-9 h-9 rounded-full flex items-center justify-center">📷</button>
+                class="nav-dot w-9 h-9 rounded-full flex items-center justify-center" aria-label="Câmera"><i class="ph ph-camera"></i></button>
             <button data-tela="tela-busca"
-                class="nav-dot w-9 h-9 rounded-full flex items-center justify-center">🔍</button>
+                class="nav-dot w-9 h-9 rounded-full flex items-center justify-center" aria-label="Busca"><i class="ph ph-magnifying-glass"></i></button>
             <button data-tela="tela-avaliacoes"
-                class="nav-dot w-9 h-9 rounded-full flex items-center justify-center">⭐</button>
+                class="nav-dot w-9 h-9 rounded-full flex items-center justify-center" aria-label="Avaliações"><i class="ph ph-star"></i></button>
             <button data-tela="tela-recursos"
-                class="nav-dot w-9 h-9 rounded-full flex items-center justify-center">🧩</button>
+                class="nav-dot w-9 h-9 rounded-full flex items-center justify-center" aria-label="Recursos"><i class="ph ph-squares-four"></i></button>
             <button data-tela="tela-perfil"
-                class="nav-dot w-9 h-9 rounded-full flex items-center justify-center">👤</button>
+                class="nav-dot w-9 h-9 rounded-full flex items-center justify-center" aria-label="Perfil"><i class="ph ph-user"></i></button>
         </nav>
 
     </div>
+
+    <!-- TOAST -->
+    <div id="toast" role="status" aria-live="polite"></div>
 
     <script type="module" src="js/model/data.js"></script>
     <script type="module" src="js/view/render.js"></script>

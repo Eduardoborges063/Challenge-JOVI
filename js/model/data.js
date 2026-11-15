@@ -29,7 +29,7 @@ export const memoriasLocais = [
     nome: "Parque Ibirapuera",
     avaliacao: 4.5,
     distancia: "50m",
-    icone: "🌳",
+    icone: "tree",
     info: "Parque urbano em São Paulo, com lagos, museus e áreas verdes."
   },
   {
@@ -37,7 +37,7 @@ export const memoriasLocais = [
     nome: "Cristo Redentor",
     avaliacao: 5,
     distancia: "100m",
-    icone: "🗿",
+    icone: "mountains",
     info: "Monumento no Rio de Janeiro, uma das Sete Maravilhas do Mundo Moderno."
   },
   {
@@ -45,7 +45,7 @@ export const memoriasLocais = [
     nome: "Cataratas do Iguaçu",
     avaliacao: 5,
     distancia: "80m",
-    icone: "🌊",
+    icone: "waves",
     info: "Conjunto de quedas d'água em Foz do Iguaçu, na fronteira com a Argentina."
   }
 ];
@@ -79,10 +79,10 @@ export const avaliacoesComunidade = [
 
 // ===== TELA 4 - RECURSOS DO JOVI (com ícones) =====
 export const recursosJovi = [
-  { id: 1, titulo: "Câmera AR", desc: "Capture memórias e veja marcadores de lugares próximos em tempo real", icone: "📷" },
-  { id: 2, titulo: "Mapa de Memórias", desc: "Veja tudo o que a comunidade já registrou perto de você", icone: "🗺️" },
-  { id: 3, titulo: "Feedback com IA", desc: "Receba dicas automáticas para melhorar suas fotos e registros", icone: "🤖" },
-  { id: 4, titulo: "Desafios Semanais", desc: "Complete metas e ganhe XP para subir de nível", icone: "🏆" }
+  { id: 1, titulo: "Câmera AR", desc: "Capture memórias e veja marcadores de lugares próximos em tempo real", icone: "camera" },
+  { id: 2, titulo: "Mapa de Memórias", desc: "Veja tudo o que a comunidade já registrou perto de você", icone: "map-trifold" },
+  { id: 3, titulo: "Feedback com IA", desc: "Receba dicas automáticas para melhorar suas fotos e registros", icone: "robot" },
+  { id: 4, titulo: "Desafios Semanais", desc: "Complete metas e ganhe XP para subir de nível", icone: "trophy" }
 ];
 
 // ===== TELA 5 - PERFIL =====

@@ -14,15 +14,12 @@ export function renderEstrelas(nota) {
   let html = '';
   for (let i = 1; i <= 5; i++) {
     if (nota >= i) {
-      html += `<span class="text-yellow-400">★</span>`;
+      html += `<i class="ph-fill ph-star text-yellow-400"></i>`;
     } else if (nota >= i - 0.5) {
       html += `
-        <span class="relative inline-block text-slate-600">
-          ☆
-          <span class="absolute inset-0 overflow-hidden text-yellow-400" style="width:50%">★</span>
-        </span>`;
+        <i class="ph-fill ph-star-half text-yellow-400"></i>`;
     } else {
-      html += `<span class="text-slate-600">☆</span>`;
+      html += `<i class="ph ph-star text-slate-600"></i>`;
     }
   }
   return html;
@@ -61,6 +58,22 @@ export function mostrarFormularioFoto(fotoUrl, localSugerido) {
   renderEstrelasEditaveis(localSugerido?.avaliacao ? Math.round(localSugerido.avaliacao) : 0);
 }
 
+export function resetarFormularioFoto() {
+  fotoAtualUrl = null;
+  document.getElementById('perfil-foto-card').classList.add('hidden');
+  document.getElementById('estado-sem-foto').classList.remove('hidden');
+  document.getElementById('input-local-foto').value = '';
+  document.getElementById('input-feedback-foto').value = '';
+  renderEstrelasEditaveis(0);
+}
+
+// Evita injetar HTML vindo do usuário (nome do local etc.) nos templates
+export function escapeHtml(texto = '') {
+  return String(texto).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
 export function getFotoAtualUrl() {
   return fotoAtualUrl;
 }
@@ -76,7 +89,7 @@ export function renderEstrelasEditaveis(notaInicial = 0) {
   const container = document.getElementById('estrelas-editaveis');
 
   container.innerHTML = [1, 2, 3, 4, 5].map(i => `
-    <span data-valor="${i}" class="${i <= notaSelecionada ? 'text-yellow-400' : 'text-slate-600'}">★</span>
+    <span data-valor="${i}" class="${i <= notaSelecionada ? 'text-yellow-400' : 'text-slate-600'}"><i class="${i <= notaSelecionada ? 'ph-fill' : 'ph'} ph-star"></i></span>
   `).join('');
 
   container.querySelectorAll('span').forEach(estrela => {
@@ -148,6 +161,16 @@ export function renderResultadosBusca(termo = '') {
 
   const resultados = [...pessoasEncontradas, ...lugaresEncontrados];
 
+  if (resultados.length === 0) {
+    container.innerHTML = `
+      <li class="empty-state">
+        <i class="ph ph-magnifying-glass"></i>
+        <p>Nada encontrado para “${escapeHtml(termo)}”</p>
+        <span>Tente outro nome de pessoa ou lugar.</span>
+      </li>`;
+    return;
+  }
+
   container.innerHTML = resultados.map(item => {
     const expandido = resultadoExpandidoId === `${item.tipoResultado}-${item.id}`;
     return item.tipoResultado === 'pessoa'
@@ -171,7 +194,7 @@ function renderResultadoPessoa(item, expandido) {
           <p class="font-semibold text-sm">${item.nome} <span class="text-slate-500 font-normal">${item.usuario}</span></p>
           <p class="text-[11px] text-slate-500">Pessoa</p>
         </div>
-        <span class="text-slate-500 text-xs">${expandido ? '▲' : '▼'}</span>
+        <span class="text-slate-500 text-xs"><i class="ph ph-caret-${expandido ? 'up' : 'down'}"></i></span>
       </button>
 
       ${expandido ? `
@@ -194,7 +217,7 @@ function renderResultadoPessoa(item, expandido) {
             </div>
           ` : `
             <p class="text-xs text-slate-500">
-              🔒 As fotos deste perfil são privadas. Adicione ${item.nome.split(' ')[0]} como amigo para visualizar.
+              <i class="ph-fill ph-lock-simple"></i> As fotos deste perfil são privadas. Adicione ${item.nome.split(' ')[0]} como amigo para visualizar.
             </p>
           `}
         </div>
@@ -208,13 +231,13 @@ function renderResultadoLugar(item, expandido) {
     <li class="bg-slate-900 rounded-xl overflow-hidden">
       <button data-id="lugar-${item.id}" class="btn-expandir w-full flex items-center gap-3 p-3 text-left">
         <span class="w-9 h-9 rounded-lg bg-red-600 flex items-center justify-center text-base shrink-0">
-          ${item.icone}
+          <i class="ph-fill ph-${item.icone}"></i>
         </span>
         <div class="flex-1">
           <p class="font-semibold text-sm">${item.nome}</p>
           <p class="text-[11px] text-slate-500">${item.distancia}</p>
         </div>
-        <span class="text-slate-500 text-xs">${expandido ? '▲' : '▼'}</span>
+        <span class="text-slate-500 text-xs"><i class="ph ph-caret-${expandido ? 'up' : 'down'}"></i></span>
       </button>
 
       ${expandido ? `
@@ -284,12 +307,12 @@ export function renderAvaliacoes() {
             <p class="text-sm">${renderEstrelas(item.avaliacao)}</p>
             ${!expandida ? `<p class="text-xs text-slate-500 truncate">${resumoFeedback(item.feedback)}</p>` : ''}
           </div>
-          <span class="text-slate-500 text-xs shrink-0">${expandida ? '▲' : '▼'}</span>
+          <span class="text-slate-500 text-xs shrink-0"><i class="ph ph-caret-${expandida ? 'up' : 'down'}"></i></span>
         </button>
 
         ${expandida ? `
           <div class="px-3 pb-3 border-t border-slate-800 pt-3 space-y-2">
-            <p class="text-xs text-slate-400">📍 ${item.local}</p>
+            <p class="text-xs text-slate-400"><i class="ph-fill ph-map-pin"></i> ${item.local}</p>
 
             ${item.fotoLocal
               ? `<img src="${item.fotoLocal}" class="w-full h-32 object-cover rounded-lg" alt="${item.local}">`
@@ -300,8 +323,8 @@ export function renderAvaliacoes() {
             <p class="text-[11px] text-slate-500">${item.data}</p>
 
             <button data-id="${item.id}" class="btn-toggle-comentarios flex items-center gap-1 text-xs ${temComentarios ? 'text-slate-400' : 'text-slate-600'} mt-2">
-              💬 ${temComentarios ? `${item.comentarios.length} comentário${item.comentarios.length > 1 ? 's' : ''}` : 'Sem comentários'}
-              ${temComentarios ? `<span>${comentariosAbertos ? '▲' : '▼'}</span>` : ''}
+              <i class="ph ph-chat-circle-text"></i> ${temComentarios ? `${item.comentarios.length} comentário${item.comentarios.length > 1 ? 's' : ''}` : 'Sem comentários'}
+              ${temComentarios ? `<i class="ph ph-caret-${comentariosAbertos ? 'up' : 'down'}"></i>` : ''}
             </button>
 
             ${temComentarios && comentariosAbertos ? `
@@ -350,7 +373,7 @@ export function renderRecursos() {
   container.innerHTML = recursosJovi.map(item => `
     <li class="flex items-center gap-3 bg-slate-900 rounded-xl p-3">
       <span class="w-8 h-8 bg-red-600 rounded-lg shrink-0 flex items-center justify-center text-base">
-        ${item.icone}
+        <i class="ph-fill ph-${item.icone}"></i>
       </span>
       <div>
         <p class="font-semibold text-sm">${item.titulo}</p>
@@ -434,9 +457,9 @@ export function renderMinhasFotos() {
   vazio.classList.add('hidden');
   container.innerHTML = minhasFotos.map(foto => `
     <div class="relative rounded-lg overflow-hidden h-24">
-      <img src="${foto.fotoUrl}" class="w-full h-full object-cover" alt="${foto.local}">
+      <img src="${foto.fotoUrl}" class="w-full h-full object-cover" alt="${escapeHtml(foto.local)}">
       <div class="absolute bottom-0 left-0 right-0 bg-slate-900/80 px-1 py-0.5">
-        <p class="text-[9px] truncate">${foto.local || 'Sem local'}</p>
+        <p class="text-[9px] truncate">${escapeHtml(foto.local) || 'Sem local'}</p>
       </div>
     </div>
   `).join('');
