@@ -1,3 +1,6 @@
+<img width="1794" height="874" alt="Captura de tela 2026-11-16 133838" src="https://github.com/user-attachments/assets/5fdae29c-3b4c-475f-9d35-2c5111f85c91" />
+
+
 # 📸 JOVI — Câmera de Memórias
 
 Aplicação web que permite ao usuário registrar memórias de lugares através de fotos, avaliar locais visitados, interagir com a comunidade e acompanhar sua evolução dentro da plataforma através de um sistema de níveis e XP.
